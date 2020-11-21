@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
+#include <string>
 #include <stdlib.h>
 #include <time.h>
 
@@ -206,11 +207,11 @@ void TrojanMap::CreateGraphFromCSVFile() {
       else if (count == 3) //collumn 3
         {
           n.name = word;
-          if(word!='')    
+          if(!word.empty())    
           {
             nameVector.push_back(word);
-            std::pair1<double,double> pair=std::make_pair(n.lat,n.lon);
-            location_map.insert (std::pair<std::string, std::pair<double, double>> (word,pair1);  
+            std::pair<double,double> pair1=std::make_pair(n.lat,n.lon);
+            location_map.insert (std::pair<std::string, std::pair<double, double>> (word,pair1));  
           }
         }
       else                //collumn 4
@@ -422,22 +423,24 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
 
 std::vector<std::string> TrojanMap::Autocomplete(std::string name) {
   std::vector<std::string> results{};
-
+   std::string namecmp=name;
   std::string namesrc;
-  std::string namecmp=name;
 
-  if (name=="")   return -1;                                                 //Corner Case : when name is given blank. 
+
+if (name=="")   return {"-1"};                                                 //Corner Case : when name is given blank. 
   
-  for(int i = 0; i <sizeof(nameVector)/sizeof(nameVector[0]); i++)
+  for(auto i:nameVector)
     {
+        std::string namesrc=i.substr(0,name.length());
         //npos returns -1. If substring is not found, find will return -1.
         //if substring is found, condition fails and count is incremented 
-        namesrc=nameVector[i];
+        //namesrc=i;
         transform(namesrc.begin(),namesrc.end(),namesrc.begin(),::tolower);   // Converting to lower for comparison 
-        transform(name.begin()   ,name.end()   ,name.begin()   ,::tolower);   // Converting to lower for comparison 
+        transform(namecmp.begin(),namecmp.end(),namecmp.begin(),::tolower);   // Converting to lower for comparison 
 
-        if (namesrc.find(namecmp) != string::npos)
-            results.push_back(nameVector[i]);                                 // Pushing original deta into the result vector
+      //  std::cout<<namesrc<<" | | "<<namecmp<<std::endl;
+        if (namecmp.compare(namesrc) == 0)
+            results.push_back(i);                                 // Pushing original deta into the result vector
     }
 
   return results;
@@ -452,9 +455,9 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name) {
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
   std::pair<double, double> results(-1, -1);
 
-  std::map<std::string, std::pair<double, double>>::iterator it = mymap.find(name);
-  if (it != mymap.end())
-    result=std::make_pair(it->second.first,it->second.second);                        //Creating the result pair
+  std::map<std::string, std::pair<double, double>>::iterator it = location_map.find(name);
+  if (it != location_map.end())
+    results=std::make_pair(it->second.first,it->second.second);                        //Creating the result pair
 
   return results;
 }
