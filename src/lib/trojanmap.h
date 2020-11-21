@@ -22,6 +22,7 @@ class Node {
 
 class TrojanMap {
  public:
+   std::vector<std::string> nameVector;
   //-----------------------------------------------------
   // TODO: You do not and should not change the following functions:
 
@@ -96,10 +97,8 @@ class TrojanMap {
  private:
   // A map of ids to Nodes.
   std::map<std::string, Node> data;
-  std::vector<std::string> nameVector;
-
   std::map<std::string, std::pair<double, double>> location_map;
-  
+
 };
 
 #endif
