@@ -20,9 +20,14 @@ class Node {
         neighbors;  // List of the ids of all neighbor points.
 };
 
+
 class TrojanMap {
  public:
-   std::vector<std::string> nameVector;
+    std::vector<std::string> nameVector;
+    std::string print_route(std::map<std::string,std::string> &parent_path,std::string i);
+    std::map<std::string,std::string> parent_path; //first -> vertice and second->previous vertice
+    std::vector<std::string> result;
+
   //-----------------------------------------------------
   // TODO: You do not and should not change the following functions:
 
@@ -93,12 +98,12 @@ class TrojanMap {
 
   //-----------------------------------------------------
 
+std::string GetId(std::string name);
   
  private:
   // A map of ids to Nodes.
   std::map<std::string, Node> data;
   std::map<std::string, std::pair<double, double>> location_map;
-
 };
 
 #endif
