@@ -24,6 +24,7 @@ class Node {
 class TrojanMap {
  public:
     std::vector<std::string> nameVector;
+    std::vector<std::string> nodes;
     std::string print_route(std::map<std::string,std::string> &parent_path,std::string i);
     std::map<std::string,std::string> parent_path; //first -> vertice and second->previous vertice
     std::vector<std::string> result;
@@ -78,6 +79,8 @@ class TrojanMap {
 
   // Returns a vector of names given a partial name.
   std::vector<std::string> Autocomplete(std::string name);
+
+  std::vector<std::string> Autocomplete_Anywhere(std::string name);
 
   // Returns lat and long of the given the name.
   std::pair<double, double> GetPosition(std::string name);
