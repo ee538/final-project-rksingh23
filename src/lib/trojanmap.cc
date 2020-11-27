@@ -9,6 +9,8 @@
 #include <time.h>
 #include <iomanip> 
 #include <cfloat>
+#include <chrono>
+#include <bits/stdc++.h> 
 
 #include <algorithm>
 #include <fstream>
@@ -204,7 +206,10 @@ void TrojanMap::CreateGraphFromCSVFile() {
       word.erase(std::remove(word.begin(), word.end(), '['), word.end());
       word.erase(std::remove(word.begin(), word.end(), ']'), word.end());
       if (count == 0)      //collumn 0
+      {
         n.id = word;
+        nodes.push_back(word);
+      }
       else if (count == 1) //collumn 1
         n.lat = stod(word);
       else if (count == 2) //column 2
@@ -486,8 +491,35 @@ if (name=="")   return {"-1"};                                                 /
             results.push_back(i);                                 // Pushing original deta into the result vector
     }
 
+  std::sort(results.begin(),results.end());//sort the vector
+
   return results;
 }
+
+
+std::vector<std::string> TrojanMap::Autocomplete_Anywhere(std::string name) {
+  std::vector<std::string> results{};
+
+  std::string namesrc;
+  std::string namecmp=name;
+
+  if (name=="")   return {"-1"};                                                 //Corner Case : when name is given blank. 
+  
+  for(auto i:nameVector)
+    {
+        //npos returns -1. If substring is not found, find will return -1.
+        //if substring is found, condition fails and count is incremented 
+        namesrc=i;
+        transform(namesrc.begin(),namesrc.end(),namesrc.begin(),::tolower);   // Converting to lower for comparison 
+        transform(name.begin()   ,name.end()   ,name.begin()   ,::tolower);   // Converting to lower for comparison 
+
+        if (namesrc.find(namecmp) != std::string::npos)
+            results.push_back(i);                                 // Pushing original deta into the result vector
+    }
+  std::sort(results.begin(),results.end());//sort the vector
+  return results;
+}
+
 
 /**
  * GetPosition: Given a location name, return the position.
@@ -529,10 +561,12 @@ std::string TrojanMap::print_route(std::map<std::string,std::string> &parent_pat
 
 
 
+
 /*
   std::vector<std::string> TrojanMap::CalculateShortestPath(std::string location1_name,
                                                  std::string location2_name)
 {
+  auto time_stamp_start = std::chrono::steady_clock::now();
 std::vector<std::string> x;
 std::map<std::string, double> dist; //maps id with its respective distance from source
 
@@ -598,7 +632,7 @@ std::string end = GetId(location2_name);
     //now we need an iterator to get the neighbours and their weights
 
 
-  
+
     for(auto neighbor : adj_list[cur_node]) 
     {
         weight = CalculateDistance(data[cur_node],data[neighbor]);  //Shortest Distance between current node and neighbor 
@@ -638,8 +672,13 @@ std::string end = GetId(location2_name);
 
 
    x = result;
+   auto time_stamp_stop = std::chrono::steady_clock::now(); 
+  std::chrono::duration<double> duration_program = time_stamp_stop - time_stamp_start; 
+  
+    std::cout << "Time taken by function: "<< duration_program.count() << " seconds" << std::endl;
   return x;
   }
+
 
 
 */
@@ -649,16 +688,21 @@ std::string end = GetId(location2_name);
 
 
 
-//BELMAN FORD ->
 
-std::vector<std::string> TrojanMap::CalculateShortestPath(std::string location1_name,
-                                                 std::string location2_name){
+//***********************************************************************************
+//BELLMAN FORD
+
+  std::vector<std::string> TrojanMap::CalculateShortestPath(std::string location1_name,
+                                                 std::string location2_name)
+{
+  auto time_stamp_start = std::chrono::steady_clock::now();
 std::vector<std::string> x;
-std::map<std::string,double> dist; //maps id with its respective distance from source
+std::map<std::string, double> dist; //maps id with its respective distance from source
 
 std::map<std::string, std::string> parent_path;
 std::string start = GetId(location1_name);
 std::string end = GetId(location2_name);
+
 
  std::map<std::string,std::vector<std::string>> adj_list;
 
@@ -667,8 +711,23 @@ std::string end = GetId(location2_name);
           adj_list[it.second.id]= it.second.neighbors;
 
     }
- 
- typedef std::pair<double,std::string> dist_info;                                                                                               int V = data.size();
+    
+
+
+  
+  //for(auto i:adj_list)
+  //{
+  //  std::cout<<i.first;
+  //  for (auto it:i.second)
+  //  {
+  //    std::cout<<it<<" ";
+  //  }
+  //  std::cout<<std::endl;
+  //}
+  
+
+  typedef std::pair<double,std::string> dist_info;
+  //                                                                                                            int V = data.size();
 
   std::priority_queue <dist_info, std::vector<dist_info>, std::greater<dist_info>> max_heap;
 
@@ -680,7 +739,7 @@ std::string end = GetId(location2_name);
     dist[n.id] = DBL_MAX;
   }
 
-    
+
   max_heap.push(std::make_pair(0,GetId(location1_name)));
 
   parent_path[GetId(location1_name)]= "null"; // blank value for key source in previous map
@@ -691,41 +750,47 @@ std::string end = GetId(location2_name);
   std::string loc2_id= GetId(location2_name);
   //  std::cout<<" loc2 id is: "<< loc2_id<<std::endl;
   dist[a.id] = 0;
-
   double weight=0;
+
   std::string cur_node;
+    //Predecessor
+     std::map<std::string, std::vector<std::string>> parent_;
 
   while(!max_heap.empty())    //actually we should write while Max_heap->data != location2_name
   {
     cur_node = max_heap.top().second; // u is id of node on which we re currently present
+    
+      for (auto i:nodes)
+        for(auto j:adj_list[i])
+           if (j==cur_node)     parent_[cur_node].push_back(j);
+
     //x.push_back(u);
     max_heap.pop();
 
-    dist[cur_node]=0;
+    //now we need an iterator to get the neighbours and their weights
 
+
+
+  for(auto parent_node:parent_[cur_node])
+  {
     for(auto neighbor : adj_list[cur_node]) 
     {
-      weight = CalculateDistance(data[cur_node],data[neighbor]);  //Shortest Distance between current node and neighbor 
-    
-      for(auto inner_neighbor : adj_list[neighbor]) 
+        weight = CalculateDistance(data[parent_node],data[neighbor]);  //Shortest Distance between current node and neighbor 
+
+    if(dist[neighbor] > (dist[parent_node] + weight)) //if distance of current node > distance from source to parent node and it's neighbor
       {
-     auto  weight_inner = CalculateDistance(data[cur_node],data[inner_neighbor]) +
-             CalculateDistance(data[inner_neighbor],data[neighbor]);  //Shortest Distance between current node and neighbor 
-         
-         auto min_dist=std::min((dist[cur_node]+weight),(dist[cur_node]+weight_inner));
-
-             if(dist[neighbor] > (dist[cur_node] + min_dist)) //if distance of current node > distance of current node and it's neighbor
-              {
-
-                dist[neighbor] = (dist[cur_node] + min_dist); //Distance of source to current node + distance of current node to it's neighbor
-                parent_path[neighbor] = cur_node; 
-                max_heap.push(std::make_pair(dist[neighbor],neighbor));
-                // x.push_back(cur_node);
-              }
+        dist[neighbor] = (dist[parent_node] + weight); //Distance of source to current node + distance of current node to it's neighbor
+        parent_path[neighbor] = cur_node; 
+        max_heap.push(std::make_pair(dist[neighbor],neighbor));
+        // x.push_back(cur_node);
       }
     }
   }
 
+  }
+  
+  //print_route
+    
     for(auto i: data)
     {
       if(i.second.id==loc2_id && dist[i.second.id]!=DBL_MAX) 
@@ -736,14 +801,27 @@ std::string end = GetId(location2_name);
       break;
       }
     }
+   // x.push_back("Test");
+   
+   
+   //for(auto i:result)
+    //std::cout<<i<<" ";
+  //std::cout<<std::endl;
 
- //x.push_back(start); 
-//std::reverse(x.begin(),x.end());
+
 
    x = result;
+   auto time_stamp_stop = std::chrono::steady_clock::now(); 
+  std::chrono::duration<double> duration_program = time_stamp_stop - time_stamp_start; 
+  
+    std::cout << "Time taken by function: "<< duration_program.count() << " seconds" << std::endl;
   return x;
+  }
 
-}
+
+//***********************************************************************************8
+
+
 
 
 
