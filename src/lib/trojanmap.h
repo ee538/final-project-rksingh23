@@ -25,7 +25,7 @@ class TrojanMap {
  public:
     std::vector<std::string> nameVector;
     std::vector<std::string> nodes;
-    std::string print_route(std::map<std::string,std::string> &parent_path,std::string i);
+    //std::string print_route(std::map<std::string,std::string> &parent_path,std::string i);
     std::map<std::string,std::string> parent_path; //first -> vertice and second->previous vertice
     std::vector<std::string> result;
 
@@ -87,7 +87,10 @@ class TrojanMap {
 
   // Given the name of two locations, it should return the **ids** of the nodes
   // on the shortest path.
-  std::vector<std::string> CalculateShortestPath(std::string location1_name,
+  std::vector<std::string> CalculateShortestPath_Bellman(std::string location1_name,
+                                                 std::string location2_name);
+
+    std::vector<std::string> CalculateShortestPath(std::string location1_name,
                                                  std::string location2_name);
 
   // Given a vector of location ids, it should reorder them such that the path
@@ -97,6 +100,10 @@ class TrojanMap {
   // (Notice that we don't find the optimal answer. You can return an estimated
   // path.)
   std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan(
+      std::vector<std::string> &location_ids);
+
+  std::vector<std::string> two_optSwap(std::vector<std::string> route, int i, int j);
+  std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_2opt(
       std::vector<std::string> &location_ids);
 
   //-----------------------------------------------------
