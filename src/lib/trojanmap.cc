@@ -39,26 +39,31 @@
  */
 void TrojanMap::PrintMenu() {
 
+  std::cout << std::endl;
   std::string menu =
-      "**************************************************************\n"
-      "* Select the function you want to execute.                    \n"
-      "* 1. Autocomplete                                             \n"
-      "* 2. Find the position                                        \n"
-      "* 3. CalculateShortestPath                                    \n"
-      "* 4. Travelling salesman problem                              \n"
-      "* 5. Exit                                                     \n"
-      "**************************************************************\n";
+      "\t********************************************************************************************************************\n"
+      "\t** Select the function you want to execute.                                                                       **\n"
+      "\t** 1. Autocomplete                - Searches and returns Nodes that * STARTS WITH * the input string              **\n"
+      "\t** 2. Autocomplete                - Searches and returns Nodes that have the inout string present * ANYWHERE *    **\n"
+      "\t** 3. Find the position                                                                                           **\n"
+      "\t** 4. CalculateShortestPath       - * BELLMAN - FORD * for incorporating -ve edges, WARNING ---> BAD RUNTIME      **\n"
+      "\t** 5. CalculateShortestPath       - * DIJKSTRA * for quicker runtime                                              **\n"
+      "\t** 6. Travelling salesman problem - Brute Force                                                                   **\n"
+      "\t** 7. Travelling salesman problem - 2 OPT Heuristic                                                               **\n"
+      "\t** 8. Exit                                                                                                        **\n"
+      "\t********************************************************************************************************************\n";
   std::cout << menu << std::endl;
   std::string input;
   getline(std::cin, input);
   char number = input[0];
   switch (number)
   {
+
   case '1':
   {
     menu =
         "**************************************************************\n"
-        "* 1. Autocomplete                                             \n"
+        "* 1. Autocomplete  * STARTS WITH *                            \n"
         "**************************************************************\n";
     std::cout << menu << std::endl;
     menu = "Please input a partial location:";
@@ -77,11 +82,36 @@ void TrojanMap::PrintMenu() {
     PrintMenu();
     break;
   }
+
   case '2':
   {
     menu =
         "**************************************************************\n"
-        "* 2. Find the position                                        \n"
+        "* 2. Autocomplete   * ANYWHERE *                              \n"
+        "**************************************************************\n";
+    std::cout << menu << std::endl;
+    menu = "Please input a partial location:";
+    std::cout << menu;
+    getline(std::cin, input);
+    auto results = Autocomplete_Anywhere(input);
+    menu = "*************************Results******************************\n";
+    std::cout << menu;
+    if (results.size() != 0) {
+      for (auto x : results) std::cout << x << std::endl;
+    } else {
+      std::cout << "No matched locations." << std::endl;
+    }
+    menu = "**************************************************************\n";
+    std::cout << menu << std::endl;
+    PrintMenu();
+    break;
+  }
+
+  case '3':
+  {
+    menu =
+        "**************************************************************\n"
+        "* 3. Find the position                                        \n"
         "**************************************************************\n";
     std::cout << menu << std::endl;
     menu = "Please input a location:";
@@ -102,11 +132,44 @@ void TrojanMap::PrintMenu() {
     PrintMenu();
     break;
   }
-  case '3':
+
+  case '4':
+  {
+    menu =
+        "********************************************************************\n"
+        "* 4. CalculateShortestPath BELLMAN - FORD                           \n"
+        " WARNING: please be patient - MAX. WAIT TIME is approx 3 minutes    \n"
+        "********************************************************************\n";
+    std::cout << menu << std::endl;
+    menu = "Please input the start location:";
+    std::cout << menu;
+    std::string input1;
+    getline(std::cin, input1);
+    menu = "Please input the destination:";
+    std::cout << menu;
+    std::string input2;
+    getline(std::cin, input2);
+    auto results = CalculateShortestPath_Bellman(input1, input2);
+    menu = "*************************Results******************************\n";
+    std::cout << menu;
+    if (results.size() != 0) {
+      for (auto x : results) std::cout << x << std::endl;
+      PlotPath(results);
+    } else {
+      std::cout << "No route from the start point to the destination."
+                << std::endl;
+    }
+    menu = "**************************************************************\n";
+    std::cout << menu << std::endl;
+    PrintMenu();
+    break;
+  }
+
+  case '5':
   {
     menu =
         "**************************************************************\n"
-        "* 3. CalculateShortestPath                                            "
+        "* 5. CalculateShortestPath DIJKSTRA                             "
         "      \n"
         "**************************************************************\n";
     std::cout << menu << std::endl;
@@ -133,11 +196,12 @@ void TrojanMap::PrintMenu() {
     PrintMenu();
     break;
   }
-  case '4':
+
+  case '6':
   {
     menu =
         "**************************************************************\n"
-        "* 4. Travelling salesman problem                              \n"
+        "* 6. Travelling salesman problem - BRUTE FORCE                \n"
         "**************************************************************\n";
     std::cout << menu << std::endl;
     menu = "In this task, we will select N random points on the map and you need to find the path to travel these points and back to the start point.";
@@ -175,10 +239,53 @@ void TrojanMap::PrintMenu() {
     PrintMenu();
     break;
   }
-  case '5':
+
+  case '7':
+  {
+    menu =
+        "**************************************************************\n"
+        "* 7. Travelling salesman problem - 2 OPT Heuristic            \n"
+        "**************************************************************\n";
+    std::cout << menu << std::endl;
+    menu = "In this task, we will select N random points on the map and you need to find the path to travel these points and back to the start point.";
+    std::cout << menu << std::endl << std::endl;
+    menu = "Please input the number of the places:";
+    std::cout << menu;
+    getline(std::cin, input);
+    int num = std::stoi(input);
+    std::vector<std::string> keys;
+    for (auto x : data) {
+      keys.push_back(x.first);
+    }
+    std::vector<std::string> locations;
+    srand(time(NULL));
+    for (int i = 0; i < num; i++)
+      locations.push_back(keys[rand() % keys.size()]);
+    PlotPoints(locations);
+    std::cout << "Calculating ..." << std::endl;
+    auto results = TravellingTrojan_2opt(locations);
+    menu = "*************************Results******************************\n";
+    std::cout << menu;
+    CreateAnimation(results.second);
+    if (results.second.size() != 0) {
+      for (auto x : results.second[results.second.size()-1]) std::cout << x << std::endl;
+      menu = "**************************************************************\n";
+      std::cout << menu;
+      std::cout << "The distance of the path is:" << results.first << std::endl;
+      PlotPath(results.second[results.second.size()-1]);
+    } else {
+      std::cout << "The size of the path is 0" << std::endl;
+    }
+    menu = "**************************************************************\n"
+           "You could find your animation at src/lib/output.avi.          \n";
+    std::cout << menu << std::endl;
+    PrintMenu();
+    break;
+  }
+  case '8':
     break;
   default:
-    std::cout << "Please select 1 - 5." << std::endl;
+    std::cout << "Please select 1 - 8." << std::endl;
     PrintMenu();
     break;
   }
@@ -538,17 +645,6 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
 }
 
 
-std::string TrojanMap::print_route(std::map<std::string,std::string> &parent_path,std::string i) {
-  
-  if(i == "null") return "";
-
-  print_route(parent_path,parent_path[i]);
-  //std::cout<<"i: "<<i<<std::endl;
-  result.push_back(i);
-  return i;
-}
-
-
 
 /**
  * CalculateShortestPath: Given 2 locations, return the shortest path which is a
@@ -562,9 +658,11 @@ std::string TrojanMap::print_route(std::map<std::string,std::string> &parent_pat
 
 
 
-/*
-  std::vector<std::string> TrojanMap::CalculateShortestPath(std::string location1_name,
-                                                 std::string location2_name)
+
+      //DIJKSTRA ALGORITHM
+
+
+std::vector<std::string> TrojanMap::CalculateShortestPath(std::string location1_name, std::string location2_name)
 {
   auto time_stamp_start = std::chrono::steady_clock::now();
 std::vector<std::string> x;
@@ -573,35 +671,16 @@ std::map<std::string, double> dist; //maps id with its respective distance from 
 std::map<std::string, std::string> parent_path;
 std::string start = GetId(location1_name);
 std::string end = GetId(location2_name);
-
-
- std::map<std::string,std::vector<std::string>> adj_list;
+std::map<std::string,std::vector<std::string>> adj_list;
 
  for (auto it: data){
-   
           adj_list[it.second.id]= it.second.neighbors;
-
     }
     
-  
-  //for(auto i:adj_list)
-  //{
-  //  std::cout<<i.first;
-  //  for (auto it:i.second)
-  //  {
-  //    std::cout<<it<<" ";
-  //  }
-  //  std::cout<<std::endl;
-  //}
-  
 
   typedef std::pair<double,std::string> dist_info;
-  //                                                                                                            int V = data.size();
 
   std::priority_queue <dist_info, std::vector<dist_info>, std::greater<dist_info>> max_heap;
-
-
-//  std::map<std::string,double> dist; //map of id and its distance from source
 
   for(auto it = data.begin(); it!=data.end();it++) {
     Node n = it->second;
@@ -633,10 +712,9 @@ std::string end = GetId(location2_name);
 
 
 
-    for(auto neighbor : adj_list[cur_node]) 
+  for(auto neighbor : adj_list[cur_node]) 
     {
         weight = CalculateDistance(data[cur_node],data[neighbor]);  //Shortest Distance between current node and neighbor 
-    
 
     if(dist[neighbor] > (dist[cur_node] + weight)) //if distance of current node > distance of current node and it's neighbor
     {
@@ -650,38 +728,36 @@ std::string end = GetId(location2_name);
 
   }
   
-  //print_route
-    
-    for(auto i: data)
-    {
-      if(i.second.id==loc2_id && dist[i.second.id]!=DBL_MAX) 
-      {
-      std::cout<<(i.second.id==loc2_id && dist[i.second.id]!=DBL_MAX)<<" ";
-      std::cout<<"Route is: ["<<print_route(parent_path,i.second.id);
-      std::cout<<"]"<<std::endl;
-      break;
-      }
-    }
-   // x.push_back("Test");
-   
-   
-   //for(auto i:result)
-    //std::cout<<i<<" ";
-  //std::cout<<std::endl;
 
+  result.clear();
+  std::string parent = parent_path[end];
+  result.push_back(end);
+  while (parent !=start)
+  {
+    result.push_back(parent);
+    parent=parent_path[parent];
+  }
+  result.push_back(start);
+  std::reverse(result.begin(),result.end());
 
-
-   x = result;
-   auto time_stamp_stop = std::chrono::steady_clock::now(); 
+  x = result;
+ 
+  
+  //Reversing the nodes for G TEST compatibility
+  //std::reverse(x.begin(),x.end());
+  auto time_stamp_stop = std::chrono::steady_clock::now(); 
   std::chrono::duration<double> duration_program = time_stamp_stop - time_stamp_start; 
   
-    std::cout << "Time taken by function: "<< duration_program.count() << " seconds" << std::endl;
+  std::cout << "Time taken by function: "<< duration_program.count() << " seconds" << std::endl;
+  parent_path.clear();
+
   return x;
   }
 
 
 
-*/
+
+
 
 
 
@@ -692,7 +768,7 @@ std::string end = GetId(location2_name);
 //***********************************************************************************
 //BELLMAN FORD
 
-  std::vector<std::string> TrojanMap::CalculateShortestPath(std::string location1_name,
+  std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman(std::string location1_name,
                                                  std::string location2_name)
 {
   auto time_stamp_start = std::chrono::steady_clock::now();
@@ -707,107 +783,44 @@ std::string end = GetId(location2_name);
  std::map<std::string,std::vector<std::string>> adj_list;
 
  for (auto it: data){
-   
           adj_list[it.second.id]= it.second.neighbors;
-
     }
-    
-
-
-  
-  //for(auto i:adj_list)
-  //{
-  //  std::cout<<i.first;
-  //  for (auto it:i.second)
-  //  {
-  //    std::cout<<it<<" ";
-  //  }
-  //  std::cout<<std::endl;
-  //}
-  
-
-  typedef std::pair<double,std::string> dist_info;
-  //                                                                                                            int V = data.size();
-
-  std::priority_queue <dist_info, std::vector<dist_info>, std::greater<dist_info>> max_heap;
-
-
-//  std::map<std::string,double> dist; //map of id and its distance from source
 
   for(auto it = data.begin(); it!=data.end();it++) {
     Node n = it->second;
     dist[n.id] = DBL_MAX;
   }
 
+  dist[start] = 0;
+    std::string loc2_id= GetId(location2_name);
 
-  max_heap.push(std::make_pair(0,GetId(location1_name)));
 
-  parent_path[GetId(location1_name)]= "null"; // blank value for key source in previous map
-  
-  Node a = data[GetId(location1_name)]; // loc1 node
-//  std::cout<<" loc1 id is: "<< GetId(location1_name)<<std::endl;
-
-  std::string loc2_id= GetId(location2_name);
-  //  std::cout<<" loc2 id is: "<< loc2_id<<std::endl;
-  dist[a.id] = 0;
-  double weight=0;
-
-  std::string cur_node;
-    //Predecessor
-     std::map<std::string, std::vector<std::string>> parent_;
-
-  while(!max_heap.empty())    //actually we should write while Max_heap->data != location2_name
+for(size_t i=0;i<nodes.size()-1;i++) //Total edges 
   {
-    cur_node = max_heap.top().second; // u is id of node on which we re currently present
-    
-      for (auto i:nodes)
-        for(auto j:adj_list[i])
-           if (j==cur_node)     parent_[cur_node].push_back(j);
-
-    //x.push_back(u);
-    max_heap.pop();
-
-    //now we need an iterator to get the neighbours and their weights
-
-
-
-  for(auto parent_node:parent_[cur_node])
+  for(cur_node:nodes) 
   {
     for(auto neighbor : adj_list[cur_node]) 
     {
-        weight = CalculateDistance(data[parent_node],data[neighbor]);  //Shortest Distance between current node and neighbor 
+       auto  weight = CalculateDistance(data[cur_node],data[neighbor]);  //Shortest Distance between current node and neighbor 
 
-    if(dist[neighbor] > (dist[parent_node] + weight)) //if distance of current node > distance from source to parent node and it's neighbor
+    if(dist[neighbor] > (dist[cur_node] + weight)) //if distance of current node > distance from source to parent node and it's neighbor
       {
-        dist[neighbor] = (dist[parent_node] + weight); //Distance of source to current node + distance of current node to it's neighbor
+        dist[neighbor] = (dist[cur_node] + weight); //Distance of source to current node + distance of current node to it's neighbor
         parent_path[neighbor] = cur_node; 
-        max_heap.push(std::make_pair(dist[neighbor],neighbor));
-        // x.push_back(cur_node);
       }
     }
   }
-
   }
-  
-  //print_route
-    
-    for(auto i: data)
-    {
-      if(i.second.id==loc2_id && dist[i.second.id]!=DBL_MAX) 
-      {
-      std::cout<<(i.second.id==loc2_id && dist[i.second.id]!=DBL_MAX)<<" ";
-      std::cout<<"Route is: ["<<print_route(parent_path,i.second.id);
-      std::cout<<"]"<<std::endl;
-      break;
-      }
-    }
-   // x.push_back("Test");
-   
-   
-   //for(auto i:result)
-    //std::cout<<i<<" ";
-  //std::cout<<std::endl;
 
+  std::string parent = parent_path[end];
+  result.push_back(end);
+  while (parent !=start)
+  {
+    result.push_back(parent);
+    parent=parent_path[parent];
+  }
+  result.push_back(start);
+  std::reverse(result.begin(),result.end());
 
 
    x = result;
@@ -819,7 +832,12 @@ std::string end = GetId(location2_name);
   }
 
 
-//***********************************************************************************8
+//***********************************************************************************
+
+
+
+
+
 
 
 
@@ -837,5 +855,83 @@ std::string end = GetId(location2_name);
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan(
                                     std::vector<std::string> &location_ids) {
   std::pair<double, std::vector<std::vector<std::string>>> results;
-  return results;
-} 
+
+   std::vector< std::pair<double,std::vector<std::string>>> paths;
+
+//Brute Force
+  do{
+
+   double ans =  CalculatePathLength(location_ids);
+   std::vector<std::string> temp = location_ids;
+   paths.push_back({ans,temp});
+  }
+  while(std::next_permutation(location_ids.begin(),location_ids.end()));
+  std::sort(paths.begin(),paths.end());
+  std::vector<std::vector<std::string>> temp1;
+  for(int i=paths.size()-1;i>=0;i--)
+  {
+    temp1.push_back(paths[i].second);
+  }
+  std::cout<<paths[0].first;
+  results = {paths[0].first,temp1};
+    return results;
+}
+
+
+//2 OPT_SWAP HELPER
+std::vector<std::string> TrojanMap::two_optSwap(std::vector<std::string> route, int i, int j) {
+   std::vector<std::string> temp;
+      for(int x=0; x < i; x++){
+          temp.push_back(route[x]);
+      }
+      for(int x=j; x>=i; x--){
+          temp.push_back(route[x]);
+      }
+      if(j+1<route.size())
+       for(int x=j+1; x < route.size(); x++){
+          temp.push_back(route[x]);
+      }
+      return temp;
+ }
+
+
+std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_2opt(
+                                    std::vector<std::string> &location_ids) {
+       
+         std::vector< std::pair<double,std::vector<std::string>>> paths;
+          std::pair<double, std::vector<std::vector<std::string>>> results;
+
+         std::vector<std::string> exisiting_route  = location_ids;
+      double prev = DBL_MAX;
+      bool improve = true;
+      while(improve) {
+      start_again:
+      improve= false;
+       double best_distance = CalculatePathLength(exisiting_route);
+       if(prev-best_distance <= 0) break;
+       prev = best_distance;
+        for(int i = 0; i <= location_ids.size()-2; i++) {
+          for(int k = i+1; k <= location_ids.size()-1; k++) {
+            std::vector<std::string> new_route = two_optSwap(exisiting_route, i,k);
+            double new_distance = CalculatePathLength(new_route);
+            //std::cout<<i<<" "<<k<<" "<<new_distance<<std::endl;
+            if(new_distance < best_distance) {
+              exisiting_route = new_route;
+              best_distance = new_distance;
+              paths.push_back({best_distance,new_route});
+              improve = true;
+              goto start_again;
+             
+            }
+          }
+        }
+      }
+       std::vector<std::vector<std::string>> temp1;
+  for(int i=0;i<=paths.size()-1;i++)
+  {
+    temp1.push_back(paths[i].second);
+  }
+  results = {paths[paths.size()-1].first,temp1};
+    return results;
+}
+
