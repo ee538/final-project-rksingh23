@@ -1,3 +1,4 @@
+  
 #ifndef TROJAN_MAP_H
 #define TROJAN_MAP_H
 #define DOT_SIZE 5
@@ -109,6 +110,7 @@ class TrojanMap {
   //-----------------------------------------------------
 
 std::string GetId(std::string name);
+~TrojanMap();
   
  private:
   // A map of ids to Nodes.
