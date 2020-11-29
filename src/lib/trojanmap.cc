@@ -812,6 +812,7 @@ for(size_t i=0;i<nodes.size()-1;i++) //Total edges
   }
   }
 
+  result.clear();
   std::string parent = parent_path[end];
   result.push_back(end);
   while (parent !=start)
@@ -934,4 +935,3 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
   results = {paths[paths.size()-1].first,temp1};
     return results;
 }
-
