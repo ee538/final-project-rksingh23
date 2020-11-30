@@ -481,6 +481,17 @@ std::pair<double, double> TrojanMap::GetPlotLocation(double lat, double lon) {
  * @return {double}         : latitude
  */
 double TrojanMap::GetLat(std::string id) { 
+     //Corner case
+    double empty=0;
+
+    if (id.empty()) return empty;
+
+    auto it = std::find (nodes.begin(), nodes.end(), id);
+    if (it == nodes.end())        
+    {
+      std::cout<<"No such place in the Map - Try again"<<std::endl;
+      return empty;
+    } 
     Node temp = data[id];     //Extracting the value for the corresponding key i.e. id from data map
   return temp.lat; 
 }
@@ -492,6 +503,18 @@ double TrojanMap::GetLat(std::string id) {
  * @return {double}         : longitude
  */
 double TrojanMap::GetLon(std::string id) { 
+   //Corner case
+    double empty=0;
+
+    if (id.empty()) return empty;
+
+    auto it = std::find (nodes.begin(), nodes.end(), id);
+    if (it == nodes.end())        
+    {
+      std::cout<<"No such place in the Map - Try again"<<std::endl;
+      return empty;
+    } 
+  
   Node temp = data[id];  
   return temp.lon; 
 }
@@ -503,6 +526,18 @@ double TrojanMap::GetLon(std::string id) {
  * @return {std::string}    : name
  */
 std::string TrojanMap::GetName(std::string id) { 
+      //Corner case
+    std::string empty;
+
+    if (id.empty()) return empty;
+
+    auto it = std::find (nodes.begin(), nodes.end(), id);
+    if (it == nodes.end())        
+    {
+      std::cout<<"No such place in the Map - Try again"<<std::endl;
+      return empty;
+    } 
+
   Node temp = data[id];  
   return temp.name; 
 }
