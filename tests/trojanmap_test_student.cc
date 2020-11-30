@@ -2,12 +2,33 @@
 
 #include <map>
 #include <vector>
+#include <algorithm>
 
 #include "gtest/gtest.h"
 
 TEST(TrojanMapTest, Test1) {
   EXPECT_EQ(true, true);
 }
+
+
+//Test GetPosition Function
+TEST(TrojanMapTest, FindPosition_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  // Test Case sensitivity
+  auto position = m.GetPosition("CHICKFILA");
+  std::pair<double, double> gt1; // groundtruth for "ChickfilA"
+  EXPECT_EQ(position, gt1);
+  // Test spacing bewteen the name
+  position = m.GetPosition("R alphs");
+  std::pair<double, double> gt2; // groundtruth for "Ralphs"
+  EXPECT_EQ(position, gt2);
+    // Test Target
+  position = m.GetPosition("Target");
+  std::pair<double, double> gt4(34.0257016, -118.2843512); // groundtruth for "Target"
+  EXPECT_EQ(position, gt4);
+}
+
 
 TEST(TrojanMapTest, Autocomplete_corner_case_rohit1) {
   TrojanMap m;
@@ -128,6 +149,24 @@ TEST(TrojanMapTest, CalculateShortestPath_corner_case_Bellman_rohit3) {
   EXPECT_EQ(actual, empty); 
 }
 
+TEST(TrojanMapTest, CalculateShortestPath_corner_case_Travelling_Trojan_brute_rohit1) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> empty;
+  std::pair<double, std::vector<std::vector<std::string>>> expeced_empty;
+  auto actual = m.TravellingTrojan(empty);
+  EXPECT_EQ(actual, expeced_empty); 
+}
+
+TEST(TrojanMapTest, CalculateShortestPath_corner_case_Travelling_Trojan_2_opt_rohit1) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> empty;
+  std::pair<double, std::vector<std::vector<std::string>>> expeced_empty;
+  auto actual = m.TravellingTrojan_2opt(empty);
+  EXPECT_EQ(actual, expeced_empty); 
+}
+
 
 
 
@@ -138,7 +177,7 @@ TEST(TrojanMapTest, CalculateShortestPath_corner_case_Bellman_rohit3) {
 
 /*
 
-TEST(TrojanMapTest, CalculateShortestPath_Bellman) {
+TEST(TrojanMapTest, CalculateShortestPath_Bellman_rohit) {
   TrojanMap m;
   m.CreateGraphFromCSVFile();
 
@@ -165,3 +204,149 @@ TEST(TrojanMapTest, CalculateShortestPath_Bellman) {
 }
 
 */
+
+//Test for Travelling Trojan - Brute Force Function
+TEST(TrojanMapTest, TSP1_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> input{"1849116058", "6816305553", "269633656"}; // Input location ids 
+  auto result = m.TravellingTrojan(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"1849116058", "6816305553", "269633656", "1849116058"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (gt == result.second[result.second.size()-1]) // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (gt == result.second[result.second.size()-1]) 
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
+//The below test will give result as false as we are delibrately changing the path in "gt"
+TEST(TrojanMapTest, TSP2_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> input{"1849116058", "6816305553", "269633656"}; // Input location ids 
+  auto result = m.TravellingTrojan(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"1849116058", "6813416142", "6816305553", "1849116058"}; // It will fail as we are delibrately providing different path
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (gt == result.second[result.second.size()-1]) // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (gt == result.second[result.second.size()-1]) 
+    flag = true;
+  
+  EXPECT_EQ(flag, false);
+}
+
+TEST(TrojanMapTest, TSP3_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> input{"7071968735", "6807274422", "544348508", "1849116067", "6818390153", "6813416142", "6817275189", "7477898578", "1378231753", "6788057222"}; // Input location ids 
+  auto result = m.TravellingTrojan(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"7071968735", "544348508", "1378231753", "6788057222", "1849116067", "6813416142", "6818390153", "7477898578", "6807274422", "6817275189", "7071968735"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (gt == result.second[result.second.size()-1]) // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (gt == result.second[result.second.size()-1]) 
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
+
+TEST(TrojanMapTest, TSP4_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> input{"6815813018", "123182692", "4399914025", "6820972453", "2613117902", "5768963647"}; // Input location ids 
+  auto result = m.TravellingTrojan(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"6815813018", "4399914025", "2613117902", "123182692", "5768963647", "6820972453", "6815813018"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (gt == result.second[result.second.size()-1]) // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (gt == result.second[result.second.size()-1]) 
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
+
+//Test for Travelling Trojan - Two_Opt Function
+TEST(TrojanMapTest, TSP1_two_opt) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> input{"1849116058", "6816305553", "269633656"}; // Input location ids 
+  auto result = m.TravellingTrojan_2opt(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"1849116058", "6816305553", "269633656", "1849116058"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (gt == result.second[result.second.size()-1]) // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (gt == result.second[result.second.size()-1]) 
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
+//The below test will give result as false as we are delibrately changing the path in "gt"
+TEST(TrojanMapTest, TSP2_two_opt) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> input{"1849116058", "6816305553", "269633656"}; // Input location ids 
+  auto result = m.TravellingTrojan_2opt(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"1849116058", "6813416142", "6816305553", "1849116058"}; // It will fail as we are delibrately providing different path
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (gt == result.second[result.second.size()-1]) // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (gt == result.second[result.second.size()-1]) 
+    flag = true;
+  
+  EXPECT_EQ(flag, false);
+}
+
+TEST(TrojanMapTest, TSP3_two_opt) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> input{"7071968735", "6807274422", "544348508", "1849116067", "6818390153", "6813416142", "6817275189", "7477898578", "1378231753", "6788057222"}; // Input location ids 
+  auto result = m.TravellingTrojan_2opt(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"7071968735", "544348508", "1378231753", "6788057222", "1849116067", "6813416142", "6818390153", "7477898578", "6807274422", "6817275189", "7071968735"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (gt == result.second[result.second.size()-1]) // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (gt == result.second[result.second.size()-1]) 
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
+
+TEST(TrojanMapTest, TSP4_two_opt) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::vector<std::string> input{"6815813018", "123182692", "4399914025", "6820972453", "2613117902", "5768963647"}; // Input location ids 
+  auto result = m.TravellingTrojan_2opt(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"6815813018", "4399914025", "2613117902", "123182692", "5768963647", "6820972453", "6815813018"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (gt == result.second[result.second.size()-1]) // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (gt == result.second[result.second.size()-1]) 
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
