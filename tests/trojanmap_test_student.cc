@@ -10,32 +10,7 @@ TEST(TrojanMapTest, Test1) {
   EXPECT_EQ(true, true);
 }
 
-
-//Test GetPosition Function
-TEST(TrojanMapTest, FindPosition_kunal) {
-  TrojanMap m;
-  m.CreateGraphFromCSVFile();
-  // Test Case sensitivity
-  auto position = m.GetPosition("CHICKFILA");
-  std::pair<double, double> gt1; // groundtruth for "ChickfilA"
-  EXPECT_EQ(position, gt1);
-  // Test spacing bewteen the name
-  position = m.GetPosition("R alphs");
-  std::pair<double, double> gt2; // groundtruth for "Ralphs"
-  EXPECT_EQ(position, gt2);
-    // Test Target
-  position = m.GetPosition("Target");
-  std::pair<double, double> gt4(34.0257016, -118.2843512); // groundtruth for "Target"
-  EXPECT_EQ(position, gt4);
-}
-
-TEST(TrojanMapTest, GetNeighborsID_kunal){
-  TrojanMap m;
-  m.CreateGraphFromCSVFile();
-  auto Neighbor = m.GetNeighborIDs("5229911615");         //Unique id: Student Union STU
-  std::vector<std::string> gt1 = {"5229911604", "6814620863"};
-  EXPECT_EQ(Neighbor, gt1);
-}
+//Rohit's Test Cases
 
 TEST(TrojanMapTest, GetNeighborsID_rohit){
   TrojanMap m;
@@ -44,31 +19,64 @@ TEST(TrojanMapTest, GetNeighborsID_rohit){
   auto Neighbor = m.GetNeighborIDs(empty);         //Unique id: Student Union STU
   std::vector<std::string> empty_expected;
   EXPECT_EQ(Neighbor, empty_expected);
+
+  empty="Rohit";
+  Neighbor = m.GetNeighborIDs(empty);         //Unique id: Student Union STU
+  EXPECT_EQ(Neighbor, empty_expected);
 }
 
-TEST(TrojanMap, GetLat_kunal) {
+TEST(TrojanMapTest, GetName_rohit){
   TrojanMap m;
   m.CreateGraphFromCSVFile();
-  double Lat = m.GetLat("5567718696");    //Unique ID for: DULCE
-  double gt1 =  34.0253528;
-  EXPECT_EQ(Lat, gt1);
+  std::string empty;
+  auto name = m.GetName(empty);         //Unique id: Student Union STU
+  std::string empty_expected;
+  EXPECT_EQ(name, empty_expected);
+
+  empty="Rohit";
+  name = m.GetName(empty);         //Unique id: Student Union STU
+  EXPECT_EQ(name, empty_expected);
+
+  std::string id="5229911615";
+  name = m.GetName(id);         //Unique id: Student Union STU
+  std::string expected ="Student Union STU";
+  EXPECT_EQ(name, expected);
 }
 
-TEST(TrojanMap, GetLon_kunal) {
+
+
+TEST(TrojanMap, GetLat_rohit) {
   TrojanMap m;
   m.CreateGraphFromCSVFile();
-  double Lon = m.GetLon("5567718696");    //Unique ID for: DULCE
-  double gt1 =  -118.2854176;
-  EXPECT_EQ(Lon, gt1);
+  double Lat = m.GetLat("Rohit");  
+  EXPECT_EQ(Lat, 0);
+
+  std::string empty;
+  Lat = m.GetLat(empty);  
+  EXPECT_EQ(Lat, 0);
 }
 
-TEST(TrojanMap, GetName_kunal) {
-   TrojanMap m;
+TEST(TrojanMap, GetPathLength_rohit) {
+  TrojanMap m;
   m.CreateGraphFromCSVFile();
-  std::string name = m.GetName("5567718696");    //Unique ID for: DULCE
-  std::string gt1 =  "Dulce";
-  EXPECT_EQ(name, gt1);
+  std::vector<std::string> empty;
+  double len = m.CalculatePathLength(empty);  
+  EXPECT_EQ(len, 0);
 }
+
+
+TEST(TrojanMap, GetLon_rohit) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  double Lon = m.GetLon("Rohit");  
+  EXPECT_EQ(Lon, 0);
+
+  std::string empty;
+  Lon = m.GetLon(empty);  
+  EXPECT_EQ(Lon, 0);
+}
+
+
 
 TEST(TrojanMapTest, Autocomplete_corner_case_rohit1) {
   TrojanMap m;
@@ -244,6 +252,66 @@ TEST(TrojanMapTest, CalculateShortestPath_Bellman_rohit) {
 }
 
 */
+
+
+
+
+
+
+//Kunal's Test Cases
+
+//Test GetPosition Function
+TEST(TrojanMapTest, FindPosition_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  // Test Case sensitivity
+  auto position = m.GetPosition("CHICKFILA");
+  std::pair<double, double> gt1; // groundtruth for "ChickfilA"
+  EXPECT_EQ(position, gt1);
+  // Test spacing bewteen the name
+  position = m.GetPosition("R alphs");
+  std::pair<double, double> gt2; // groundtruth for "Ralphs"
+  EXPECT_EQ(position, gt2);
+    // Test Target
+  position = m.GetPosition("Target");
+  std::pair<double, double> gt4(34.0257016, -118.2843512); // groundtruth for "Target"
+  EXPECT_EQ(position, gt4);
+}
+
+TEST(TrojanMapTest, GetNeighborsID_kunal){
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  auto Neighbor = m.GetNeighborIDs("5229911615");         //Unique id: Student Union STU
+  std::vector<std::string> gt1 = {"5229911604", "6814620863"};
+  EXPECT_EQ(Neighbor, gt1);
+}
+
+TEST(TrojanMap, GetLon_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  double Lon = m.GetLon("5567718696");    //Unique ID for: DULCE
+  double gt1 =  -118.2854176;
+  EXPECT_EQ(Lon, gt1);
+}
+
+
+TEST(TrojanMap, GetName_kunal) {
+   TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::string name = m.GetName("5567718696");    //Unique ID for: DULCE
+  std::string gt1 =  "Dulce";
+  EXPECT_EQ(name, gt1);
+}
+
+
+TEST(TrojanMap, GetLat_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  double Lat = m.GetLat("5567718696");    //Unique ID for: DULCE
+  double gt1 =  34.0253528;
+  EXPECT_EQ(Lat, gt1);
+}
+
 
 //Test for Travelling Trojan - Brute Force Function
 TEST(TrojanMapTest, TSP1_kunal) {
