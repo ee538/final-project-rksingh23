@@ -29,6 +29,46 @@ TEST(TrojanMapTest, FindPosition_kunal) {
   EXPECT_EQ(position, gt4);
 }
 
+TEST(TrojanMapTest, GetNeighborsID_kunal){
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  auto Neighbor = m.GetNeighborIDs("5229911615");         //Unique id: Student Union STU
+  std::vector<std::string> gt1 = {"5229911604", "6814620863"};
+  EXPECT_EQ(Neighbor, gt1);
+}
+
+TEST(TrojanMapTest, GetNeighborsID_rohit){
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::string empty;
+  auto Neighbor = m.GetNeighborIDs(empty);         //Unique id: Student Union STU
+  std::vector<std::string> empty_expected;
+  EXPECT_EQ(Neighbor, empty_expected);
+}
+
+TEST(TrojanMap, GetLat_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  double Lat = m.GetLat("5567718696");    //Unique ID for: DULCE
+  double gt1 =  34.0253528;
+  EXPECT_EQ(Lat, gt1);
+}
+
+TEST(TrojanMap, GetLon_kunal) {
+  TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  double Lon = m.GetLon("5567718696");    //Unique ID for: DULCE
+  double gt1 =  -118.2854176;
+  EXPECT_EQ(Lon, gt1);
+}
+
+TEST(TrojanMap, GetName_kunal) {
+   TrojanMap m;
+  m.CreateGraphFromCSVFile();
+  std::string name = m.GetName("5567718696");    //Unique ID for: DULCE
+  std::string gt1 =  "Dulce";
+  EXPECT_EQ(name, gt1);
+}
 
 TEST(TrojanMapTest, Autocomplete_corner_case_rohit1) {
   TrojanMap m;
