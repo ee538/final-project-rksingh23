@@ -341,8 +341,10 @@ void TrojanMap::CreateGraphFromCSVFile() {
           }
         }
       else                //collumn 4
-      word.erase(std::remove(word.begin(), word.end(), ' '), word.end());
+      {
+	      word.erase(std::remove(word.begin(), word.end(), ' '), word.end());
         n.neighbors.push_back(word);
+      }
       count++;
     }
     data[n.id] = n;
