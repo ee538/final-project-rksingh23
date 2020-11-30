@@ -1,4 +1,3 @@
-  
 #ifndef TROJAN_MAP_H
 #define TROJAN_MAP_H
 #define DOT_SIZE 5
