@@ -7,15 +7,6 @@
 
 - Please clone the repository, look through [README.md](README.md) and fill up functions to finish in the project.
 - Please make sure that your code can run `bazel run/test`.
-- In this project, you will need to fill up [trojanmap.cc](src/lib/trojanmap.cc) and add unit tests in tests.
-- Do **Not** change or modify any given functions that are specified not to change in [trojanmap.cc](src/lib/trojanmap.cc) and [trojanmap.h](src/lib/trojanmap.h). Unexpected changes will result in zero credit. Only modify and complete the functions that are specified.
-- For coding questions, there is a **black box** testing for each question. All points are only based on passing the tests (i.e. we don't grade your work by your source code). Try to do comprehensive testing before your final submission.
-- For submission, please push your solutions to your own Github before the deadline.
-- **Due Dates**:
-  - **Specifying team members**: You can work on the project in teams of 1 to 2 students. Please [specify your team members](https://docs.google.com/spreadsheets/d/1lkI0viun0lW3rjniwAyFGl9e8kTKXqmRoRFzzxDueSE/edit?usp=sharing) by Wednesday November 4th.
-  - **Video presentation**: Monday November 23rd (In the class). Each team should create a 1 to 2 minute presentation that includes: quick introduction of the team, explanation of the solution architecture (High level. Use slides and some graphs. No need to go into code details. Focus on one interesting part and explain that if you want). You can refer to the [sample videos from the previous semester](https://github.com/ourarash/EE599_SP2020_Final_Project).
-  - **Final report: Friday**, November 27th by 6:30 pm
-- Total: 120 points. 100 points is considered full credit.
 
 ---
 
@@ -283,30 +274,4 @@ You could find your animation at src/lib/output.avi
 
 <p align="center"><img src="img/output.gif" alt="TSP videos" width="500"/></p>
 
-## Report and Rubrics:
 
-Your final project should be checked into Github. The README of your project is your report.
-
-### Report:
-
-Your README file should include two sections:
-
-1. High-level overview of your design (Use diagrams and pictures)
-2. Detailed description of each function and its time complexity.
-3. Discussion, conclusion, and lessons learned.
-
-### Rubrics:
-
-1. Implementation of auto complete: 10 points.
-2. Implementation of GetPosition: 5 points.
-3. Implementation of shortest path: 20 points.
-4. Implementation of Travelling Trojan: 
-   1. Brute Force: 10 points
-   2. 2-opt: 15 points.
-   3. Animated plot: 10 points.
-5. Creating reasonable unit tests: 20 points.
-6. Video presentation and report: 10 points.
-7. **Extra credit items**: Maximum of 20 points:
-   1. A second shortest path algorithms (For example, you can implement both Bellman-Ford and Dijkstra): 10 points.
-   2. [3-opt](http://cs.indstate.edu/~zeeshan/aman.pdf) (If you chose to implement 2-opt for Travelling Trojan): 20 points.
-   3. [Genetic algorithm](https://www.geeksforgeeks.org/traveling-salesman-problem-using-genetic-algorithm/) implementation for Travelling Trojan: 20 points.
