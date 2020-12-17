@@ -1054,4 +1054,4 @@ std::pair<double, std::vector<std::vector<std::string>>> empty;
     std::cout << "Time taken by function: "<< duration_program.count() << " seconds" << std::endl;
     
     return results;
-} 
+}
